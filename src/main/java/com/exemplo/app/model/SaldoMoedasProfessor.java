@@ -18,7 +18,7 @@ public class SaldoMoedasProfessor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; 
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "professor_id")
