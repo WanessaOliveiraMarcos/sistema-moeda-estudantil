@@ -318,3 +318,46 @@ td.detalhe { white-space: normal; min-width: 220px; color: var(--suave); }
 .lista .item label.curto { flex: 0 0 120px; min-width: 120px; }
 .lista .item [data-remover] { align-self: center; margin-top: 18px; }
 .lista [data-adicionar] { align-self: flex-start; }
+
+/* ---------- turmas, envios entre colegas e autorizações ---------- */
+.contador {
+    display: inline-block;
+    min-width: 18px;
+    margin-left: 6px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--perigo);
+    color: var(--fundo);
+    font-size: 0.7rem;
+    line-height: 18px;
+    text-align: center;
+    letter-spacing: 0;
+}
+.formulario.em-linha { flex-direction: row; flex-wrap: wrap; align-items: flex-end; max-width: none; margin-top: 16px; padding: 20px; }
+.formulario.em-linha label { min-width: 220px; }
+.formulario label.curto, .formulario.em-linha label.curto { flex: 0 0 140px; min-width: 120px; }
+.turmas, .pedidos { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.turma, .pedido { display: flex; flex-direction: column; gap: 6px; padding: 22px; background: var(--superficie); border: 1px solid var(--borda); }
+.turma h3, .pedido h3 { margin: 0; font-size: 1.3rem; }
+.turma h4 { margin: 12px 0 4px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dourado); }
+.turma p, .pedido p { margin: 0; }
+.turma ul { margin: 0 0 10px; padding: 0; list-style: none; }
+.turma li { padding: 6px 0; border-bottom: 1px solid var(--borda); }
+.turma li small { color: var(--suave); margin-left: 6px; }
+.turma .vazio { color: var(--suave); }
+.turma .botao { align-self: flex-start; margin-top: auto; }
+.semestre { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dourado); }
+.professor, .vagas { color: var(--suave); }
+.pedidos { grid-template-columns: 1fr; }
+.pedido { flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+.pedido .resumo { display: flex; flex-direction: column; gap: 4px; }
+.pedido .detalhe { color: var(--suave); }
+.pedido .decisao { display: flex; flex-direction: column; gap: 8px; min-width: 260px; }
+.pedido .decisao form { margin: 0; }
+.pedido .recusar { display: flex; gap: 8px; }
+.pedido .recusar input { flex: 1; padding: 8px 10px; border: 1px solid var(--bege); border-radius: 2px; font: inherit; background: var(--fundo); color: var(--texto); }
+.situacao { display: inline-block; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid; }
+.situacao.pendente { color: var(--dourado); }
+.situacao.aprovada { color: var(--sucesso); }
+.situacao.recusada { color: var(--perigo); }
+td small.detalhe { display: block; margin-top: 4px; }

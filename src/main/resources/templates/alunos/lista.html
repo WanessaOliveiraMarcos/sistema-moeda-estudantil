@@ -5,9 +5,9 @@
 <header th:replace="~{fragments/layout :: menu('alunos')}"></header>
 <main>
     <h1>Alunos</h1>
-    <p class="subtitulo" th:if="${instituicao}">Alunos da <strong th:text="${instituicao.nome}"></strong>, sua instituição.
+    <p class="subtitulo" th:if="${perfil == 'PROFESSOR'}">Alunos matriculados nas suas turmas.
         Use <strong>Enviar moedas</strong> para reconhecer um aluno.</p>
-    <p class="subtitulo" th:unless="${instituicao}">Alunos cadastrados em todas as instituições.</p>
+    <p class="subtitulo" th:if="${perfil == 'ADMIN'}">Alunos cadastrados em todas as instituições.</p>
 
     <form class="filtros" method="get" th:action="@{/alunos}">
         <input type="search" name="busca" th:value="${busca}" placeholder="Nome, e-mail ou CPF" aria-label="Buscar">
@@ -16,22 +16,29 @@
             <option th:each="i : ${instituicoes}" th:value="${i.id}" th:text="${i.nome}"
                     th:selected="${i.id == instituicaoId}"></option>
         </select>
+        <select name="turmaId" th:if="${perfil == 'PROFESSOR'}" aria-label="Turma" onchange="this.form.submit()">
+            <option value="">Todas as minhas turmas</option>
+            <option th:each="t : ${turmas}" th:value="${t.id}" th:text="${t.nome + ' · ' + t.semestre}"
+                    th:selected="${t.id == turmaId}"></option>
+        </select>
         <button type="submit" class="botao secundario">Buscar</button>
-        <a th:if="${busca != null and !busca.isBlank() or instituicaoId != null and instituicao == null}"
+        <a th:if="${busca != null and !busca.isBlank() or instituicaoId != null or turmaId != null}"
            th:href="@{/alunos}">Limpar</a>
     </form>
 
     <p class="resultado" th:unless="${#lists.isEmpty(alunos)}"
        th:text="${#lists.size(alunos)} + (${#lists.size(alunos)} == 1 ? ' aluno' : ' alunos')"></p>
     <p th:if="${#lists.isEmpty(alunos)}"
-       th:text="${busca != null and !busca.isBlank()} ? 'Nenhum aluno encontrado.' : 'Nenhum aluno cadastrado.'"></p>
+       th:text="${busca != null and !busca.isBlank()} ? 'Nenhum aluno encontrado.'
+                : (${perfil == 'PROFESSOR'} ? 'Nenhum aluno matriculado nas suas turmas ainda.' : 'Nenhum aluno cadastrado.')"></p>
     <div class="tabela" th:unless="${#lists.isEmpty(alunos)}">
         <table>
             <thead>
             <tr>
                 <th>Nome</th><th>E-mail</th>
                 <th th:if="${perfil == 'ADMIN'}">CPF</th>
-                <th th:unless="${instituicao}">Instituição</th><th>Curso</th>
+                <th th:if="${perfil == 'ADMIN'}">Instituição</th><th>Curso</th>
+                <th th:if="${perfil == 'PROFESSOR'}">Turmas</th>
                 <th class="num">Saldo</th>
                 <th th:if="${perfil == 'PROFESSOR'}"></th>
             </tr>
@@ -42,8 +49,9 @@
                 <td th:text="${a.email}"></td>
                 <td class="sem-quebra" th:if="${perfil == 'ADMIN'}"
                     th:text="${#strings.substring(a.cpf, 0, 3) + '.' + #strings.substring(a.cpf, 3, 6) + '.' + #strings.substring(a.cpf, 6, 9) + '-' + #strings.substring(a.cpf, 9, 11)}"></td>
-                <td th:unless="${instituicao}" th:text="${a.instituicao.nome}"></td>
+                <td th:if="${perfil == 'ADMIN'}" th:text="${a.instituicao.nome}"></td>
                 <td th:text="${a.curso.nome}"></td>
+                <td th:if="${perfil == 'PROFESSOR'}" class="detalhe" th:text="${turmasDoAluno[a.id]}"></td>
                 <td class="num" th:text="${a.saldoMoedas}"></td>
                 <td class="acoes" th:if="${perfil == 'PROFESSOR'}">
                     <a th:href="@{/moedas/enviar(alunoId=${a.id})}">Enviar moedas</a>

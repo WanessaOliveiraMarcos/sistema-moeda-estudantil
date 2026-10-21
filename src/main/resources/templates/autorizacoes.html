@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Autorizações')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('autorizacoes')}"></header>
+<main>
+    <h1>Autorizações</h1>
+    <p class="subtitulo">Pedidos dos alunos das suas turmas para enviar moedas a colegas. As moedas só são
+        transferidas quando você aprova.</p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <section>
+        <h2>Aguardando sua decisão</h2>
+        <p th:if="${#lists.isEmpty(pendentes)}">Nenhum pedido pendente.</p>
+        <div class="pedidos">
+            <article class="pedido" th:each="p : ${pendentes}">
+                <div class="resumo">
+                    <span class="semestre" th:text="${p.turma.nome}"></span>
+                    <h3>
+                        <span th:text="${p.remetente.nome}"></span> &rarr; <span th:text="${p.destinatario.nome}"></span>
+                    </h3>
+                    <p><strong th:text="${p.valor} + ' moedas'"></strong> ·
+                        <span th:text="${p.criterio.descricao}"></span>
+                        <small th:text="'(até ' + ${p.criterio.valorMaximo} + ')'"></small></p>
+                    <p class="detalhe" th:if="${p.mensagem}" th:text="'“' + ${p.mensagem} + '”'"></p>
+                    <p class="detalhe" th:text="'Pedido em ' + ${#temporals.format(p.dataHora, 'dd/MM/yyyy HH:mm')}
+                        + ' · saldo atual de ' + ${p.remetente.nome} + ': ' + ${p.remetente.saldoMoedas}"></p>
+                </div>
+                <div class="decisao">
+                    <form th:action="@{/autorizacoes/{id}/aprovar(id=${p.id})}" method="post"
+                          th:data-confirmar="|Transferir ${p.valor} moedas de ${p.remetente.nome} para ${p.destinatario.nome}?|">
+                        <button type="submit" class="botao">Aprovar</button>
+                    </form>
+                    <form th:action="@{/autorizacoes/{id}/recusar(id=${p.id})}" method="post" class="recusar">
+                        <input type="text" name="motivo" maxlength="255" placeholder="Motivo da recusa (opcional)"
+                               aria-label="Motivo da recusa">
+                        <button type="submit" class="botao secundario">Recusar</button>
+                    </form>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section>
+        <h2>Decididos recentemente</h2>
+        <p th:if="${#lists.isEmpty(decididas)}">Nenhum pedido decidido ainda.</p>
+        <div class="tabela" th:unless="${#lists.isEmpty(decididas)}">
+            <table>
+                <thead><tr><th>Decidido em</th><th>Turma</th><th>De</th><th>Para</th><th class="num">Moedas</th><th>Situação</th></tr></thead>
+                <tbody>
+                <tr th:each="p : ${decididas}">
+                    <td th:text="${#temporals.format(p.decididaEm, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${p.turma.nome}"></td>
+                    <td th:text="${p.remetente.nome}"></td>
+                    <td th:text="${p.destinatario.nome}"></td>
+                    <td class="num" th:text="${p.valor}"></td>
+                    <td>
+                        <span class="situacao" th:classappend="${#strings.toLowerCase(p.status.name())}"
+                              th:text="${p.status.descricao}"></span>
+                        <small class="detalhe" th:if="${p.motivoRecusa}" th:text="${p.motivoRecusa}"></small>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -3,12 +3,15 @@ package com.exemplo.app;
 import com.exemplo.app.model.Aluno;
 import com.exemplo.app.model.Curso;
 import com.exemplo.app.model.EmpresaParceira;
+import com.exemplo.app.model.Professor;
 import com.exemplo.app.model.TrocaVantagem;
+import com.exemplo.app.model.Turma;
 import com.exemplo.app.model.Vantagem;
 import com.exemplo.app.repository.AlunoRepository;
 import com.exemplo.app.repository.CursoRepository;
 import com.exemplo.app.repository.EmpresaParceiraRepository;
 import com.exemplo.app.repository.TrocaVantagemRepository;
+import com.exemplo.app.repository.TurmaRepository;
 import com.exemplo.app.repository.UsuarioRepository;
 import com.exemplo.app.repository.VantagemRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +50,11 @@ class PerfisTests {
     private VantagemRepository vantagemRepository;
     @Autowired
     private TrocaVantagemRepository trocaRepository;
+    @Autowired
+    private TurmaRepository turmaRepository;
 
-    // aluno da UFMG (o aluno de demonstração é da PUC Minas) e um resgate na empresa de demonstração
+    // aluna da UFMG numa turma do professor Carlos (o aluno de demonstração está na turma da Ana, na PUC Minas)
+    // e um resgate na empresa de demonstração
     @BeforeEach
     void criarDados() {
         if (usuarioRepository.existsByEmail("aluna.ufmg@exemplo.com")) {
@@ -65,6 +71,13 @@ class PerfisTests {
         alunaUfmg.setInstituicao(sistemas.getInstituicao());
         alunaUfmg.setCurso(sistemas);
         alunoRepository.save(alunaUfmg);
+
+        Turma turmaUfmg = new Turma();
+        turmaUfmg.setNome("Algoritmos");
+        turmaUfmg.setSemestre("2026/2");
+        turmaUfmg.setProfessor((Professor) usuarioRepository.findByEmail("carlos.lima@exemplo.com").orElseThrow());
+        turmaUfmg.getAlunos().add(alunaUfmg);
+        turmaRepository.save(turmaUfmg);
 
         EmpresaParceira empresa = (EmpresaParceira) usuarioRepository.findByEmail("empresa@exemplo.com").orElseThrow();
         Vantagem almoco = new Vantagem();
@@ -113,7 +126,7 @@ class PerfisTests {
 
     @Test
     @WithUserDetails("ana.souza@exemplo.com")
-    void professorSoVeAlunosDaPropriaInstituicao() throws Exception {
+    void professorSoVeAlunosDasSuasTurmas() throws Exception {
         mvc.perform(get("/")).andExpect(redirectedUrl("/alunos"));
         mvc.perform(get("/alunos"))
                 .andExpect(status().isOk())
@@ -129,7 +142,7 @@ class PerfisTests {
 
     @Test
     @WithUserDetails("carlos.lima@exemplo.com")
-    void professorDaUfmgVeAlunosDaUfmg() throws Exception {
+    void outroProfessorVeOsAlunosDaTurmaDele() throws Exception {
         mvc.perform(get("/alunos"))
                 .andExpect(content().string(containsString("Beatriz UFMG")))
                 .andExpect(content().string(not(containsString("João Pereira"))));

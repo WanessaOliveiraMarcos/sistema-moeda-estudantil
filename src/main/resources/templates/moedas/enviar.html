@@ -5,10 +5,10 @@
 <header th:replace="~{fragments/layout :: menu('alunos')}"></header>
 <main>
     <h1>Enviar moedas</h1>
-    <p class="subtitulo">Reconheça um aluno da sua instituição. Seu saldo no semestre:
+    <p class="subtitulo">Reconheça um aluno das suas turmas. Seu saldo no semestre:
         <strong th:text="${#numbers.formatInteger(saldo, 1, 'POINT')} + ' moedas'"></strong>.</p>
 
-    <p class="alerta falha" th:if="${#lists.isEmpty(alunos)}">Ainda não há alunos cadastrados na sua instituição.</p>
+    <p class="alerta falha" th:if="${#lists.isEmpty(alunos)}">Ainda não há alunos matriculados nas suas turmas.</p>
     <form th:action="@{/moedas/enviar}" th:object="${envio}" method="post" class="formulario" novalidate>
         <label>Aluno
             <select th:field="*{alunoId}" th:errorclass="invalido">

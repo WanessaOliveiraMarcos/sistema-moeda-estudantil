@@ -25,6 +25,11 @@ public class AlunoService {
     private final CursoRepository cursoRepository;
     private final UsuarioService usuarioService;
 
+    /** Alunos matriculados nas turmas do professor; turmaId nulo considera todas as turmas dele. */
+    public List<Aluno> listarDoProfessor(Long professorId, Long turmaId, String busca) {
+        return alunoRepository.buscarDoProfessor(professorId, turmaId, busca == null || busca.isBlank() ? null : busca.trim());
+    }
+
     /** instituicaoId nulo lista alunos de todas as instituições. */
     public List<Aluno> listar(Long instituicaoId, String busca) {
         return alunoRepository.buscar(instituicaoId, busca == null || busca.isBlank() ? null : busca.trim());

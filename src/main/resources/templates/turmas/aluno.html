@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Turmas')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('turmas')}"></header>
+<main>
+    <h1>Turmas</h1>
+    <p class="subtitulo">Matricule-se nas turmas dos seus professores. Na mesma turma você pode enviar moedas
+        a colegas, seguindo os critérios do professor.</p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <section>
+        <h2>Minhas turmas</h2>
+        <p th:if="${#lists.isEmpty(minhas)}">Você ainda não está matriculado em nenhuma turma.</p>
+        <div class="turmas">
+            <article class="turma" th:each="t : ${minhas}">
+                <span class="semestre" th:text="${t.semestre}"></span>
+                <h3 th:text="${t.nome}"></h3>
+                <p class="professor" th:text="'Prof. ' + ${t.professor.nome}"></p>
+                <p class="vagas" th:text="${#sets.size(t.alunos)} + ' alunos'"></p>
+                <h4>Critérios de troca</h4>
+                <ul>
+                    <li th:each="c : ${t.criterios}">
+                        <span th:text="${c.descricao}"></span> <small th:text="'até ' + ${c.valorMaximo} + ' moedas'"></small>
+                    </li>
+                    <li th:if="${#lists.isEmpty(t.criterios)}" class="vazio">O professor ainda não definiu critérios</li>
+                </ul>
+                <a class="botao secundario" th:unless="${#lists.isEmpty(t.criterios)}"
+                   th:href="@{/transferencias(turmaId=${t.id})}">Enviar moedas a um colega</a>
+            </article>
+        </div>
+    </section>
+
+    <section>
+        <h2>Turmas disponíveis</h2>
+        <p th:if="${#lists.isEmpty(disponiveis)}">Não há outras turmas na sua instituição no momento.</p>
+        <div class="tabela" th:unless="${#lists.isEmpty(disponiveis)}">
+            <table>
+                <thead><tr><th>Turma</th><th>Professor</th><th>Semestre</th><th class="num">Vagas</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="t : ${disponiveis}">
+                    <td th:text="${t.nome}"></td>
+                    <td th:text="${t.professor.nome}"></td>
+                    <td th:text="${t.semestre}"></td>
+                    <td class="num" th:text="${t.vagas} + ' de ' + ${limite}"></td>
+                    <td class="acoes">
+                        <form th:action="@{/minhas-turmas/{id}/matricular(id=${t.id})}" method="post"
+                              th:data-confirmar="|Matricular-se em “${t.nome}”?|">
+                            <button type="submit" class="botao" th:disabled="${t.lotada}"
+                                    th:text="${t.lotada} ? 'Turma cheia' : 'Matricular-se'">Matricular-se</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

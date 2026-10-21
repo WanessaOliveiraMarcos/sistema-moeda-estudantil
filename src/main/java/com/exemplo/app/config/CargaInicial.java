@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Pré-cadastro de instituições, cursos, departamentos e professores
  * (enviados pela instituição no momento da parceria), só com o banco vazio.
- * Também garante um administrador, um aluno e uma empresa de demonstração para testar o login.
+ * Também garante um administrador, dois alunos, uma empresa e uma turma de demonstração para testar.
  */
 @Component
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class CargaInicial implements CommandLineRunner {
     private final AlunoRepository alunoRepository;
     private final EmpresaParceiraRepository empresaRepository;
     private final AdministradorRepository administradorRepository;
+    private final TurmaRepository turmaRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -38,6 +39,7 @@ public class CargaInicial implements CommandLineRunner {
             carregarInstituicoesEProfessores();
         }
         carregarUsuariosDeDemonstracao();
+        carregarTurmaDeDemonstracao();
     }
 
     private void carregarInstituicoesEProfessores() {
@@ -64,20 +66,8 @@ public class CargaInicial implements CommandLineRunner {
             admin.setSenha(passwordEncoder.encode(SENHA_DEMONSTRACAO));
             administradorRepository.save(admin);
         }
-        if (!usuarioRepository.existsByEmail("aluno@exemplo.com")) {
-            cursoRepository.findFirstByNome("Engenharia de Software").ifPresent(curso -> {
-                Aluno aluno = new Aluno();
-                aluno.setNome("João Pereira");
-                aluno.setEmail("aluno@exemplo.com");
-                aluno.setSenha(passwordEncoder.encode(SENHA_DEMONSTRACAO));
-                aluno.setCpf("93541134780");
-                aluno.setRg("MG-12.345.678");
-                aluno.setEndereco("Rua dos Estudantes, 100 - Belo Horizonte/MG");
-                aluno.setInstituicao(curso.getInstituicao());
-                aluno.setCurso(curso);
-                alunoRepository.save(aluno);
-            });
-        }
+        aluno("João Pereira", "aluno@exemplo.com", "93541134780", "MG-12.345.678");
+        aluno("Maria Oliveira", "aluna2@exemplo.com", "27182818205", "MG-98.765.432");
         if (!usuarioRepository.existsByEmail("empresa@exemplo.com")) {
             EmpresaParceira empresa = new EmpresaParceira();
             empresa.setNome("Restaurante Universitário");
@@ -88,6 +78,52 @@ public class CargaInicial implements CommandLineRunner {
             empresa.setEndereco("Campus Coração Eucarístico - Belo Horizonte/MG");
             empresaRepository.save(empresa);
         }
+    }
+
+    private void aluno(String nome, String email, String cpf, String rg) {
+        if (usuarioRepository.existsByEmail(email)) {
+            return;
+        }
+        cursoRepository.findFirstByNome("Engenharia de Software").ifPresent(curso -> {
+            Aluno aluno = new Aluno();
+            aluno.setNome(nome);
+            aluno.setEmail(email);
+            aluno.setSenha(passwordEncoder.encode(SENHA_DEMONSTRACAO));
+            aluno.setCpf(cpf);
+            aluno.setRg(rg);
+            aluno.setEndereco("Rua dos Estudantes, 100 - Belo Horizonte/MG");
+            aluno.setInstituicao(curso.getInstituicao());
+            aluno.setCurso(curso);
+            alunoRepository.save(aluno);
+        });
+    }
+
+    // turma da professora Ana com os dois alunos de demonstração, só se ainda não houver turmas
+    private void carregarTurmaDeDemonstracao() {
+        if (turmaRepository.count() > 0 || !(usuarioRepository.findByEmail("ana.souza@exemplo.com").orElse(null)
+                instanceof Professor ana)) {
+            return;
+        }
+        Turma turma = new Turma();
+        turma.setNome("Laboratório de Desenvolvimento de Software");
+        turma.setSemestre(SaldoMoedasProfessor.semestreAtual());
+        turma.setProfessor(ana);
+        for (String email : new String[]{"aluno@exemplo.com", "aluna2@exemplo.com"}) {
+            usuarioRepository.findByEmail(email)
+                    .filter(Aluno.class::isInstance)
+                    .ifPresent(aluno -> turma.getAlunos().add((Aluno) aluno));
+        }
+        criterio(turma, "Ajuda em exercício", 20);
+        criterio(turma, "Explicação de conteúdo (monitoria)", 50);
+        turmaRepository.save(turma);
+    }
+
+    private static void criterio(Turma turma, String descricao, int valorMaximo) {
+        CriterioTroca criterio = new CriterioTroca();
+        criterio.setTurma(turma);
+        criterio.setDescricao(descricao);
+        criterio.setValorMaximo(valorMaximo);
+        turma.getCriterios().add(criterio);
     }
 
     private Instituicao instituicao(String nome, String endereco) {

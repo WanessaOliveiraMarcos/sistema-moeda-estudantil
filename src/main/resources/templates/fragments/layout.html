@@ -20,10 +20,16 @@
         </th:block>
         <th:block th:if="${perfil == 'ALUNO'}">
             <a th:href="@{/vantagens}" th:classappend="${ativo == 'vantagens'} ? 'ativo'">Vantagens</a>
+            <a th:href="@{/minhas-turmas}" th:classappend="${ativo == 'turmas'} ? 'ativo'">Turmas</a>
+            <a th:href="@{/transferencias}" th:classappend="${ativo == 'transferencias'} ? 'ativo'">Enviar a colega</a>
             <a th:href="@{/extrato}" th:classappend="${ativo == 'extrato'} ? 'ativo'">Extrato</a>
         </th:block>
         <th:block th:if="${perfil == 'PROFESSOR'}">
+            <a th:href="@{/turmas}" th:classappend="${ativo == 'turmas'} ? 'ativo'">Turmas</a>
             <a th:href="@{/alunos}" th:classappend="${ativo == 'alunos'} ? 'ativo'">Alunos</a>
+            <a th:href="@{/autorizacoes}" th:classappend="${ativo == 'autorizacoes'} ? 'ativo'">Autorizações<span
+                    class="contador" th:if="${autorizacoesPendentes != null and autorizacoesPendentes > 0}"
+                    th:text="${autorizacoesPendentes}"></span></a>
             <a th:href="@{/extrato}" th:classappend="${ativo == 'extrato'} ? 'ativo'">Extrato</a>
         </th:block>
         <th:block th:if="${perfil == 'EMPRESA'}">

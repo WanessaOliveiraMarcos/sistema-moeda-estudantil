@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${t.nome})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('turmas')}"></header>
+<main>
+    <a th:href="@{/turmas}">&larr; Minhas turmas</a>
+    <h1 th:text="${t.nome}"></h1>
+    <p class="subtitulo"><span th:text="${t.semestre}"></span> ·
+        <strong th:text="${#sets.size(t.alunos)} + ' de ' + ${limite} + ' alunos'"></strong></p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <section>
+        <h2>Critérios de troca</h2>
+        <p class="subtitulo">Os alunos desta turma só podem enviar moedas a colegas seguindo um destes critérios,
+            até o máximo de cada um. Você autoriza cada envio em <a th:href="@{/autorizacoes}">Autorizações</a>.</p>
+        <p th:if="${#lists.isEmpty(t.criterios)}" class="alerta falha">Sem critérios, os alunos desta turma não conseguem
+            enviar moedas entre si.</p>
+        <div class="tabela" th:unless="${#lists.isEmpty(t.criterios)}">
+            <table>
+                <thead><tr><th>Critério</th><th class="num">Máximo por envio</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="c : ${t.criterios}">
+                    <td th:text="${c.descricao}"></td>
+                    <td class="num" th:text="${c.valorMaximo} + ' moedas'"></td>
+                    <td class="acoes">
+                        <form th:action="@{/turmas/{t}/criterios/{c}/excluir(t=${t.id},c=${c.id})}" method="post"
+                              th:data-confirmar="|Remover o critério “${c.descricao}”?|">
+                            <button type="submit" class="link perigo">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <form th:action="@{/turmas/{id}/criterios(id=${t.id})}" th:object="${criterio}" method="post"
+              class="formulario em-linha" novalidate>
+            <label>Novo critério
+                <input type="text" th:field="*{descricao}" placeholder="Ex.: Ajuda em exercício" th:errorclass="invalido">
+                <span class="erro" th:errors="*{descricao}"></span>
+            </label>
+            <label class="curto">Máximo
+                <input type="number" min="1" th:field="*{valorMaximo}" placeholder="20" th:errorclass="invalido">
+                <span class="erro" th:errors="*{valorMaximo}"></span>
+            </label>
+            <button type="submit" class="botao">Adicionar</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>Alunos matriculados</h2>
+        <p th:if="${#sets.isEmpty(t.alunos)}">Nenhum aluno matriculado ainda. Os alunos da sua instituição se matriculam
+            pela página Turmas deles.</p>
+        <div class="tabela" th:unless="${#sets.isEmpty(t.alunos)}">
+            <table>
+                <thead><tr><th>Nome</th><th>E-mail</th><th>Curso</th><th class="num">Saldo</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="a : ${alunos}">
+                    <td th:text="${a.nome}"></td>
+                    <td th:text="${a.email}"></td>
+                    <td th:text="${a.curso.nome}"></td>
+                    <td class="num" th:text="${a.saldoMoedas}"></td>
+                    <td class="acoes"><a th:href="@{/moedas/enviar(alunoId=${a.id})}">Enviar moedas</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
