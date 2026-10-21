@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Alunos que compraram')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('resgates')}"></header>
+<main>
+    <h1>Alunos que compraram</h1>
+    <p class="subtitulo">Alunos que trocaram moedas pelas vantagens de <strong th:text="${empresa.nome}"></strong>.
+        Confira o código no atendimento presencial.</p>
+
+    <p th:if="${#lists.isEmpty(resgates)}">Nenhum aluno comprou suas vantagens ainda.</p>
+    <div class="tabela" th:unless="${#lists.isEmpty(resgates)}">
+        <table>
+            <thead>
+            <tr><th>Aluno</th><th>E-mail</th><th>Curso</th><th>Vantagem</th><th class="num">Moedas</th><th>Data</th><th>Código</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${resgates}">
+                <td th:text="${r.aluno.nome}"></td>
+                <td th:text="${r.aluno.email}"></td>
+                <td th:text="${r.aluno.curso.nome + ' · ' + r.aluno.instituicao.nome}"></td>
+                <td th:text="${r.vantagem.nome}"></td>
+                <td class="num" th:text="${r.valor}"></td>
+                <td th:text="${#temporals.format(r.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td><code th:text="${r.codigo}"></code></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

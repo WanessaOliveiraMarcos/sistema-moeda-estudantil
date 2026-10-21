@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Instituições')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('instituicoes')}"></header>
+<main>
+    <div class="titulo">
+        <h1>Instituições parceiras</h1>
+        <a class="botao" th:href="@{/instituicoes/nova}">Nova instituição</a>
+    </div>
+    <p class="subtitulo">Instituições, cursos e departamentos cadastrados no sistema.</p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <p th:if="${#lists.isEmpty(instituicoes)}">Nenhuma instituição cadastrada.</p>
+    <div class="instituicoes">
+        <section class="instituicao" th:each="r : ${instituicoes}">
+            <h2 th:text="${r.instituicao.nome}"></h2>
+            <p class="endereco" th:text="${r.instituicao.endereco}"></p>
+            <p class="contagens">
+                <span th:text="${r.alunos} + (${r.alunos} == 1 ? ' aluno' : ' alunos')"></span>
+                ·
+                <span th:text="${#lists.size(r.professores)} + (${#lists.size(r.professores)} == 1 ? ' professor' : ' professores')"></span>
+            </p>
+            <h3>Professores</h3>
+            <ul>
+                <li th:each="p : ${r.professores}">
+                    <span th:text="${p.nome}"></span>
+                    <small th:text="${p.departamento.nome}"></small>
+                </li>
+                <li th:if="${#lists.isEmpty(r.professores)}" class="vazio">Nenhum professor</li>
+            </ul>
+            <h3>Cursos</h3>
+            <ul>
+                <li th:each="c : ${r.cursos}">
+                    <span th:text="${c.nome}"></span>
+                    <small th:if="${c.semestres}" th:text="${c.semestres} + ' semestres'"></small>
+                </li>
+                <li th:if="${#lists.isEmpty(r.cursos)}" class="vazio">Nenhum curso</li>
+            </ul>
+            <h3>Departamentos</h3>
+            <ul>
+                <li th:each="d : ${r.departamentos}" th:text="${d.nome}"></li>
+                <li th:if="${#lists.isEmpty(r.departamentos)}" class="vazio">Nenhum departamento</li>
+            </ul>
+        </section>
+    </div>
+</main>
+</body>
+</html>

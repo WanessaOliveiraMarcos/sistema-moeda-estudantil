@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Extrato')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('extrato')}"></header>
+<main>
+    <h1>Extrato</h1>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <div class="indicadores">
+        <div class="indicador">
+            <span class="numero" th:text="${#numbers.formatInteger(saldo, 1, 'POINT')}">0</span><span>Saldo atual</span>
+        </div>
+        <th:block th:if="${saldoSemestre}">
+            <div class="indicador">
+                <span class="numero" th:text="${saldoSemestre.semestre}"></span><span>Semestre</span>
+            </div>
+            <div class="indicador">
+                <span class="numero" th:text="${#numbers.formatInteger(saldoSemestre.valorInicial, 1, 'POINT')}"></span>
+                <span>Início do semestre</span>
+            </div>
+            <div class="indicador">
+                <span class="numero" th:text="${#numbers.formatInteger(saldoSemestre.valorInicial - saldoSemestre.valorFinal, 1, 'POINT')}"></span>
+                <span>Enviadas no semestre</span>
+            </div>
+        </th:block>
+    </div>
+    <p class="subtitulo" th:if="${perfil == 'PROFESSOR'}">A cada semestre você recebe 1.000 moedas, somadas ao que sobrou.</p>
+
+    <p th:if="${#lists.isEmpty(movimentacoes)}" th:text="${saldoSemestre} ? 'Você ainda não enviou moedas.' : 'Nenhuma movimentação ainda.'"></p>
+    <div class="tabela" th:unless="${#lists.isEmpty(movimentacoes)}">
+        <table>
+            <thead>
+            <tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Detalhe</th><th>Código</th><th class="num">Moedas</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${movimentacoes}">
+                <td th:text="${#temporals.format(m.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${m.tipo}"></td>
+                <td th:text="${m.descricao}"></td>
+                <td class="detalhe" th:text="${m.detalhe}"></td>
+                <td><code th:if="${m.codigo}" th:text="${m.codigo}"></code></td>
+                <td class="num" th:classappend="${m.valor > 0} ? 'entrada' : 'saida'"
+                    th:text="(${m.valor > 0} ? '+' : '') + ${m.valor}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

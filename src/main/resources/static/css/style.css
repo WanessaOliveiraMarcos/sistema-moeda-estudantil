@@ -1,0 +1,320 @@
+/* Identidade visual da apresentação (Canva): creme, marrom e dourado, fonte Open Sauce Sans */
+
+@font-face {
+    font-family: "Open Sauce Sans";
+    src: url("../fonts/open-sauce-sans-300.woff2") format("woff2");
+    font-weight: 300;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Open Sauce Sans";
+    src: url("../fonts/open-sauce-sans-400.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Open Sauce Sans";
+    src: url("../fonts/open-sauce-sans-500.woff2") format("woff2");
+    font-weight: 500;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Open Sauce Sans";
+    src: url("../fonts/open-sauce-sans-600.woff2") format("woff2");
+    font-weight: 600;
+    font-display: swap;
+}
+
+:root {
+    color-scheme: light;
+    --fundo: #faf8f0;        /* creme do slide */
+    --superficie: #fffdf7;
+    --texto: #371a0c;        /* marrom do título */
+    --suave: #6b5644;
+    --dourado: #8e7a53;      /* rótulos em caixa alta */
+    --bege: #d1cab9;
+    --bege-claro: #e9e3d6;
+    --borda: #e2dccd;
+    --sucesso: #5d6b3a;
+    --perigo: #a3392b;
+    --fonte: "Open Sauce Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--fonte);
+    font-weight: 400;
+    background: var(--fundo);
+    color: var(--texto);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--texto); text-decoration-color: var(--dourado); text-underline-offset: 3px; }
+a:hover { color: var(--dourado); }
+
+h1, h2, h3 { font-weight: 300; letter-spacing: -0.02em; line-height: 1.1; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); margin: 8px 0 12px; }
+h2 { font-size: 1.4rem; }
+
+/* rótulo dourado em caixa alta, como no slide da apresentação */
+th, .instituicao h3, .vantagem .empresa, .indicador > span:last-child, .formulario label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dourado);
+}
+
+/* ---------- menu ---------- */
+.menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+    align-items: center;
+    padding: 18px 32px;
+    background: var(--fundo);
+    border-bottom: 1px solid var(--bege);
+}
+.menu .marca { font-weight: 500; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--texto); text-decoration: none; }
+.menu nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.menu nav a {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dourado);
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+}
+.menu nav a:hover, .menu nav a.ativo { color: var(--texto); border-bottom-color: var(--texto); }
+
+main { max-width: 1040px; margin: 0 auto; padding: 40px 16px 64px; }
+
+/* ---------- página inicial ---------- */
+.capa { padding: 32px 0 8px; }
+.capa h1 { font-size: clamp(3rem, 10vw, 6.5rem); line-height: 0.98; letter-spacing: -0.035em; margin: 0 0 24px; }
+.capa .subtitulo { font-size: 1.1rem; margin: 0; }
+
+.titulo { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+.subtitulo { color: var(--suave); margin: 0 0 28px; }
+section { margin-top: 48px; }
+
+/* ---------- botões e links ---------- */
+.botao {
+    display: inline-block;
+    padding: 10px 22px;
+    border: 1px solid var(--texto);
+    border-radius: 2px;
+    background: var(--texto);
+    color: var(--fundo);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.botao:hover { background: var(--dourado); border-color: var(--dourado); color: var(--fundo); }
+.botao.secundario { background: transparent; color: var(--texto); }
+.botao.secundario:hover { background: var(--texto); border-color: var(--texto); color: var(--fundo); }
+
+.link { background: none; border: none; padding: 0; font: inherit; color: var(--texto); text-decoration: underline; text-decoration-color: var(--dourado); text-underline-offset: 3px; cursor: pointer; }
+.perigo, .link.perigo { color: var(--perigo); text-decoration-color: currentColor; }
+
+/* ---------- avisos ---------- */
+.alerta { padding: 12px 16px; border-left: 3px solid; background: var(--superficie); }
+.alerta.sucesso { border-color: var(--sucesso); color: var(--sucesso); }
+.alerta.falha { border-color: var(--perigo); color: var(--perigo); }
+
+/* ---------- tabelas ---------- */
+.tabela { overflow-x: auto; border-top: 1px solid var(--texto); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--borda); }
+/* textos longos quebram linha nos espaços; cabeçalhos, números, CPF, telefone e códigos não */
+th, td.num, td code, td.acoes, td.sem-quebra { white-space: nowrap; }
+th { padding-top: 12px; padding-bottom: 12px; }
+td:first-child, th:first-child { padding-left: 0; }
+tbody tr:hover { background: var(--superficie); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.acoes { display: flex; gap: 16px; justify-content: flex-end; }
+.acoes form { margin: 0; }
+
+/* ---------- formulários ---------- */
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 680px;
+    padding: 32px;
+    background: var(--superficie);
+    border: 1px solid var(--borda);
+}
+.formulario label { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.formulario input, .formulario select, .formulario textarea, .filtros input, .filtros select {
+    padding: 10px 12px;
+    border: 1px solid var(--bege);
+    border-radius: 2px;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--texto);
+    background: var(--fundo);
+}
+.formulario textarea { resize: vertical; }
+.formulario input:focus, .formulario select:focus, .formulario textarea:focus,
+.filtros input:focus, .filtros select:focus { outline: none; border-color: var(--texto); }
+.formulario input[type="file"] { padding: 8px; background: transparent; }
+.formulario .invalido { border-color: var(--perigo); }
+.erro { color: var(--perigo); font-size: 0.85rem; font-weight: 400; letter-spacing: normal; text-transform: none; }
+.linha { display: flex; flex-wrap: wrap; gap: 20px; }
+.linha label { min-width: 200px; }
+.botoes { display: flex; gap: 20px; align-items: center; padding-top: 4px; }
+.dica { color: var(--suave); margin-top: -12px; }
+.foto-atual { display: flex; flex-direction: column; gap: 6px; }
+.foto-atual span { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dourado); }
+.foto-atual img { max-width: 240px; border: 1px solid var(--borda); }
+
+/* ---------- busca e filtros ---------- */
+.filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 24px 0; }
+.filtros input[type="search"] { flex: 1; min-width: 200px; }
+.filtros .botao { align-self: stretch; }
+.resultado { color: var(--suave); font-size: 0.9rem; }
+
+/* ---------- indicadores do painel ---------- */
+.indicadores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin: 32px 0;
+    border-top: 1px solid var(--texto);
+}
+.indicador {
+    display: flex;
+    flex-direction: column-reverse;
+    /* rótulo em cima e número na base, alinhado mesmo quando o rótulo quebra linha */
+    justify-content: space-between;
+    gap: 6px;
+    padding: 20px 16px 20px 0;
+    border-bottom: 1px solid var(--borda);
+    color: var(--texto);
+    text-decoration: none;
+}
+a.indicador:hover .numero { color: var(--dourado); }
+.indicador .numero { font-size: 2.8rem; font-weight: 300; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* ---------- cartões de entrada ---------- */
+.cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.cartao {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 24px;
+    background: var(--superficie);
+    border: 1px solid var(--borda);
+    color: var(--texto);
+    text-decoration: none;
+    transition: border-color 0.15s;
+}
+.cartao strong { font-size: 1.35rem; font-weight: 300; letter-spacing: -0.02em; }
+.cartao span { color: var(--suave); }
+.cartao:hover { color: var(--texto); border-color: var(--texto); }
+
+/* ---------- vantagens ---------- */
+.vantagens { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.vantagem {
+    display: flex;
+    flex-direction: column;
+    background: var(--superficie);
+    border: 1px solid var(--borda);
+    overflow: hidden;
+}
+.vantagem img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--bege-claro); }
+.vantagem .corpo { display: flex; flex-direction: column; gap: 6px; padding: 18px; flex: 1; }
+.vantagem h2 { margin: 0; font-size: 1.3rem; }
+.vantagem p { margin: 0; color: var(--suave); }
+.vantagem .custo { font-weight: 500; color: var(--texto); }
+.vantagem .acoes { justify-content: flex-start; margin-top: auto; padding-top: 10px; }
+
+/* ---------- instituições ---------- */
+.instituicoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.instituicao {
+    margin: 0;
+    padding: 28px;
+    background: var(--superficie);
+    border: 1px solid var(--borda);
+}
+.instituicao h2 { margin: 0 0 4px; font-size: 2rem; }
+.instituicao h3 { margin: 24px 0 8px; letter-spacing: 0.12em; line-height: 1.5; }
+.instituicao p { margin: 4px 0; }
+.instituicao .endereco { color: var(--suave); }
+.instituicao ul { margin: 0; padding: 0; list-style: none; }
+.instituicao li { padding: 8px 0; border-bottom: 1px solid var(--borda); }
+.instituicao li small { color: var(--suave); margin-left: 8px; }
+.instituicao .vazio { color: var(--suave); }
+
+@media (max-width: 600px) {
+    .menu { padding: 14px 16px; }
+    main { padding-top: 24px; }
+    .formulario { padding: 20px; }
+    .instituicao { padding: 20px; }
+}
+
+/* ---------- usuário logado e login ---------- */
+.usuario { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.usuario span { display: flex; flex-direction: column; line-height: 1.25; text-align: right; }
+.usuario strong { font-weight: 500; }
+.usuario small { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dourado); }
+.usuario form { margin: 0; }
+.usuario .botao { padding: 8px 16px; }
+.menu .entrar { margin-left: auto; }
+
+.acesso {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 48px;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 32px;
+    padding-bottom: 32px;
+}
+.acesso .capa { padding: 0; }
+.painel-login h2 { font-size: 2rem; margin: 0 0 20px; }
+.painel-login .formulario { max-width: none; }
+.convite { display: flex; flex-direction: column; gap: 6px; margin-top: 24px; }
+.convite span { color: var(--suave); }
+
+@media (max-width: 800px) {
+    .acesso { grid-template-columns: 1fr; gap: 32px; min-height: 0; }
+    .usuario { margin-left: 0; }
+}
+
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; padding: 2px 6px; background: var(--bege-claro); }
+
+/* ---------- saldo, extrato e resgate ---------- */
+.usuario .saldo { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2; text-decoration: none; padding-right: 16px; border-right: 1px solid var(--bege); }
+.usuario .saldo strong { font-size: 1.25rem; font-weight: 300; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.usuario .saldo:hover strong { color: var(--dourado); }
+.entrada { color: var(--sucesso); font-weight: 500; }
+.saida { color: var(--perigo); font-weight: 500; }
+td.detalhe { white-space: normal; min-width: 220px; color: var(--suave); }
+.vantagem .resgatar { margin: 10px 0 0; margin-top: auto; padding-top: 10px; }
+.vantagem .resgatar .botao { width: 100%; }
+.botao:disabled { background: var(--bege-claro); border-color: var(--bege); color: var(--suave); cursor: not-allowed; }
+
+/* ---------- listas dinâmicas (cursos e professores da instituição) ---------- */
+.formulario.largo { max-width: none; }
+.lista { margin: 0; padding: 20px; border: 1px solid var(--borda); display: flex; flex-direction: column; gap: 12px; }
+.lista legend { padding: 0 8px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dourado); }
+.lista .itens { display: flex; flex-direction: column; gap: 12px; }
+.lista .item { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; padding-bottom: 12px; border-bottom: 1px solid var(--borda); }
+.lista .item label { min-width: 160px; }
+.lista .item label.curto { flex: 0 0 120px; min-width: 120px; }
+.lista .item [data-remover] { align-self: center; margin-top: 18px; }
+.lista [data-adicionar] { align-self: flex-start; }

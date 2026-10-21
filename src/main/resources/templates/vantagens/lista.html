@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Minhas vantagens')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('minhas-vantagens')}"></header>
+<main>
+    <div class="titulo">
+        <h1>Minhas vantagens</h1>
+        <a class="botao" th:href="@{/minhas-vantagens/novo}">Nova vantagem</a>
+    </div>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <p th:if="${#lists.isEmpty(vantagens)}">Nenhuma vantagem cadastrada.</p>
+    <div class="vantagens" th:unless="${#lists.isEmpty(vantagens)}">
+        <article class="vantagem" th:each="v : ${vantagens}">
+            <img th:src="@{'/storage/' + ${v.foto}}" th:alt="${v.nome}">
+            <div class="corpo">
+                <h2 th:text="${v.nome}"></h2>
+                <p class="custo" th:text="${v.valor} + ' moedas'"></p>
+                <p th:text="${v.descricao}"></p>
+                <div class="acoes">
+                    <a th:href="@{/minhas-vantagens/{id}/editar(id=${v.id})}">Editar</a>
+                    <form th:action="@{/minhas-vantagens/{id}/excluir(id=${v.id})}" method="post"
+                          data-confirmar="Excluir esta vantagem?">
+                        <button type="submit" class="link perigo">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </article>
+    </div>
+</main>
+</body>
+</html>

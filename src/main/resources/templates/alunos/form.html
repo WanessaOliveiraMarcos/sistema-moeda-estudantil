@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cadastro de aluno')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('alunos')}"></header>
+<main>
+    <h1>Cadastro de aluno</h1>
+
+    <form th:action="@{/cadastro/aluno}" th:object="${aluno}" method="post" class="formulario" novalidate>
+
+        <label>Nome
+            <input type="text" th:field="*{nome}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{nome}"></span>
+        </label>
+        <label>E-mail
+            <input type="email" th:field="*{email}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{email}"></span>
+        </label>
+        <div class="linha">
+            <label>CPF
+                <input type="text" th:field="*{cpf}" placeholder="000.000.000-00" th:errorclass="invalido">
+                <span class="erro" th:errors="*{cpf}"></span>
+            </label>
+            <label>RG
+                <input type="text" th:field="*{rg}" th:errorclass="invalido">
+                <span class="erro" th:errors="*{rg}"></span>
+            </label>
+        </div>
+        <label>Endereço
+            <input type="text" th:field="*{endereco}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{endereco}"></span>
+        </label>
+        <div class="linha">
+            <label>Instituição de ensino
+                <select th:field="*{instituicaoId}" th:errorclass="invalido">
+                    <option value="">Selecione...</option>
+                    <option th:each="i : ${instituicoes}" th:value="${i.id}" th:text="${i.nome}"></option>
+                </select>
+                <span class="erro" th:errors="*{instituicaoId}"></span>
+            </label>
+            <label>Curso
+                <select th:field="*{cursoId}" th:errorclass="invalido">
+                    <option value="">Selecione...</option>
+                    <option th:each="c : ${cursos}" th:value="${c.id}" th:text="${c.nome}"
+                            th:data-instituicao="${c.instituicao.id}"></option>
+                </select>
+                <span class="erro" th:errors="*{cursoId}"></span>
+            </label>
+        </div>
+        <label>Senha
+            <input type="password" th:field="*{senha}" th:errorclass="invalido" placeholder="Mínimo de 6 caracteres"
+                   autocomplete="new-password">
+            <span class="erro" th:errors="*{senha}"></span>
+        </label>
+
+        <div class="botoes">
+            <button type="submit" class="botao">Salvar</button>
+            <a th:href="@{/login}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<script th:src="@{/js/aluno-form.js}"></script>
+</body>
+</html>

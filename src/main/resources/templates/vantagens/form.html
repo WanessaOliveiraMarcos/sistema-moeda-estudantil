@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${vantagem.id == null} ? 'Nova vantagem' : 'Editar vantagem')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('minhas-vantagens')}"></header>
+<main>
+    <h1 th:text="(${vantagem.id == null} ? 'Nova vantagem' : 'Editar vantagem') + ' · ' + ${empresa.nome}"></h1>
+
+    <form th:action="@{/minhas-vantagens}" th:object="${vantagem}" method="post"
+          enctype="multipart/form-data" class="formulario" novalidate>
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{fotoAtual}">
+
+        <label>Nome
+            <input type="text" th:field="*{nome}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{nome}"></span>
+        </label>
+        <label>Descrição
+            <textarea th:field="*{descricao}" rows="4" maxlength="1000" th:errorclass="invalido"></textarea>
+            <span class="erro" th:errors="*{descricao}"></span>
+        </label>
+        <label>Custo (moedas)
+            <input type="number" min="1" step="1" th:field="*{valor}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{valor}"></span>
+        </label>
+
+        <div th:if="*{fotoAtual}" class="foto-atual">
+            <span>Foto atual</span>
+            <img th:src="@{'/storage/' + *{fotoAtual}}" alt="Foto atual da vantagem">
+        </div>
+        <label><span th:text="*{fotoAtual} ? 'Trocar foto (opcional)' : 'Foto'">Foto</span>
+            <input type="file" name="arquivo" accept="image/jpeg,image/png,image/gif"
+                   th:classappend="${#fields.hasErrors('arquivo')} ? 'invalido'">
+            <span class="erro" th:errors="*{arquivo}"></span>
+        </label>
+        <small class="dica">JPG, PNG ou GIF, até 5 MB.</small>
+
+        <div class="botoes">
+            <button type="submit" class="botao">Salvar</button>
+            <a th:href="@{/minhas-vantagens}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

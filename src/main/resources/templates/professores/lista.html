@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Professores')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('professores')}"></header>
+<main>
+    <h1>Professores</h1>
+    <p class="subtitulo">Cadastrados junto com cada instituição parceira. Saldo referente ao semestre
+        <strong th:text="${semestre}"></strong>.</p>
+
+    <p th:if="${#lists.isEmpty(professores)}">Nenhum professor cadastrado.</p>
+    <div class="tabela" th:unless="${#lists.isEmpty(professores)}">
+        <table>
+            <thead>
+            <tr><th>Nome</th><th>E-mail</th><th>Departamento</th><th>Instituição</th><th class="num">Saldo</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${professores}">
+                <td th:text="${r.professor.nome}"></td>
+                <td th:text="${r.professor.email}"></td>
+                <td th:text="${r.professor.departamento.nome}"></td>
+                <td th:text="${r.professor.departamento.instituicao.nome}"></td>
+                <td class="num" th:text="${#numbers.formatInteger(r.saldo, 1, 'POINT')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

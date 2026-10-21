@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Entrar')}"></head>
+<body>
+<main class="acesso">
+    <div class="capa">
+        <h1>Sistema de<br>Moeda<br>Estudantil</h1>
+        <p class="subtitulo">Reconhecimento do mérito estudantil com moedas virtuais.</p>
+    </div>
+
+    <div class="painel-login">
+        <h2>Entrar</h2>
+        <!-- mensagem genérica: não informa se o erro foi no e-mail ou na senha (US01) -->
+        <p class="alerta falha" th:if="${param.erro}">E-mail ou senha inválidos.</p>
+        <p class="alerta sucesso" th:if="${param.saiu}">Você saiu do sistema.</p>
+        <p class="alerta sucesso" th:if="${param.cadastrado}">Cadastro realizado. Entre com seu e-mail e senha.</p>
+
+        <form th:action="@{/login}" method="post" class="formulario">
+            <label>E-mail
+                <input type="email" name="email" autocomplete="username" required autofocus>
+            </label>
+            <label>Senha
+                <input type="password" name="senha" autocomplete="current-password" required>
+            </label>
+            <div class="botoes">
+                <button type="submit" class="botao">Entrar</button>
+            </div>
+        </form>
+
+        <div class="convite">
+            <span>Ainda não tem conta?</span>
+            <a th:href="@{/cadastro/aluno}">Cadastrar como aluno</a>
+            <a th:href="@{/cadastro/empresa}">Cadastrar como empresa parceira</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

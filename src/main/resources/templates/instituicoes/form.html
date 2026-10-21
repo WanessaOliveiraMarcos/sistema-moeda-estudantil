@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Nova instituição')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('instituicoes')}"></header>
+<main>
+    <h1>Nova instituição</h1>
+    <p class="subtitulo">Cadastre a instituição com seus cursos e a lista de professores enviada na parceria.
+        Cada professor recebe 1.000 moedas no semestre e entra com o e-mail e a senha inicial informados.</p>
+
+    <form th:action="@{/instituicoes}" th:object="${instituicao}" method="post" class="formulario largo" novalidate>
+        <div class="linha">
+            <label>Nome
+                <input type="text" th:field="*{nome}" th:errorclass="invalido">
+                <span class="erro" th:errors="*{nome}"></span>
+            </label>
+            <label>Endereço
+                <input type="text" th:field="*{endereco}" th:errorclass="invalido">
+                <span class="erro" th:errors="*{endereco}"></span>
+            </label>
+        </div>
+
+        <fieldset class="lista" data-lista>
+            <legend>Cursos</legend>
+            <div class="itens">
+                <div class="item" th:each="c, i : *{cursos}">
+                    <label>Curso
+                        <input type="text" th:field="*{cursos[__${i.index}__].nome}" th:errorclass="invalido">
+                        <span class="erro" th:errors="*{cursos[__${i.index}__].nome}"></span>
+                    </label>
+                    <label class="curto">Semestres
+                        <input type="number" min="1" max="20" th:field="*{cursos[__${i.index}__].semestres}" th:errorclass="invalido">
+                        <span class="erro" th:errors="*{cursos[__${i.index}__].semestres}"></span>
+                    </label>
+                    <button type="button" class="link perigo" data-remover>Remover</button>
+                </div>
+            </div>
+            <template>
+                <div class="item">
+                    <label>Curso <input type="text" name="cursos[__I__].nome"></label>
+                    <label class="curto">Semestres <input type="number" min="1" max="20" name="cursos[__I__].semestres"></label>
+                    <button type="button" class="link perigo" data-remover>Remover</button>
+                </div>
+            </template>
+            <span class="erro" th:errors="*{cursos}"></span>
+            <button type="button" class="botao secundario" data-adicionar>Adicionar curso</button>
+        </fieldset>
+
+        <fieldset class="lista" data-lista>
+            <legend>Professores</legend>
+            <div class="itens">
+                <div class="item" th:each="p, i : *{professores}">
+                    <label>Nome
+                        <input type="text" th:field="*{professores[__${i.index}__].nome}" th:errorclass="invalido">
+                        <span class="erro" th:errors="*{professores[__${i.index}__].nome}"></span>
+                    </label>
+                    <label>CPF
+                        <input type="text" th:field="*{professores[__${i.index}__].cpf}" placeholder="000.000.000-00" th:errorclass="invalido">
+                        <span class="erro" th:errors="*{professores[__${i.index}__].cpf}"></span>
+                    </label>
+                    <label>E-mail
+                        <input type="email" th:field="*{professores[__${i.index}__].email}" th:errorclass="invalido">
+                        <span class="erro" th:errors="*{professores[__${i.index}__].email}"></span>
+                    </label>
+                    <label>Departamento
+                        <input type="text" th:field="*{professores[__${i.index}__].departamento}" th:errorclass="invalido">
+                        <span class="erro" th:errors="*{professores[__${i.index}__].departamento}"></span>
+                    </label>
+                    <label>Senha inicial
+                        <input type="password" th:field="*{professores[__${i.index}__].senha}" th:errorclass="invalido"
+                               autocomplete="new-password">
+                        <span class="erro" th:errors="*{professores[__${i.index}__].senha}"></span>
+                    </label>
+                    <button type="button" class="link perigo" data-remover>Remover</button>
+                </div>
+            </div>
+            <template>
+                <div class="item">
+                    <label>Nome <input type="text" name="professores[__I__].nome"></label>
+                    <label>CPF <input type="text" name="professores[__I__].cpf" placeholder="000.000.000-00"></label>
+                    <label>E-mail <input type="email" name="professores[__I__].email"></label>
+                    <label>Departamento <input type="text" name="professores[__I__].departamento"></label>
+                    <label>Senha inicial <input type="password" name="professores[__I__].senha" autocomplete="new-password"></label>
+                    <button type="button" class="link perigo" data-remover>Remover</button>
+                </div>
+            </template>
+            <span class="erro" th:errors="*{professores}"></span>
+            <button type="button" class="botao secundario" data-adicionar>Adicionar professor</button>
+        </fieldset>
+
+        <div class="botoes">
+            <button type="submit" class="botao">Cadastrar instituição</button>
+            <a th:href="@{/instituicoes}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<script th:src="@{/js/listas-dinamicas.js}"></script>
+</body>
+</html>

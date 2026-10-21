@@ -1,0 +1,74 @@
+LAB 03 - SISTEMA DE MOEDA ESTUDANTIL
+USUÁRIO:
+- login (email)
+- senha
+ALUNO:
+- id
+- nome
+- email
+- CPF
+- RG
+- Endereço
+- Instituição  - instituicao_id
+- curso - curso_id
+
+
+CURSO
+- id
+- Nome
+- Semestres
+- Instituicao
+
+
+INSTITUIÇÃO
+- id
+- Nome
+- Endereço
+
+Professor
+- id
+- nome
+- CPF
+- departamento_id
+
+Departamento
+- id
+- nome 
+- instituicao_id
+
+Saldo Moedas Professor
+- id
+- Semestre
+- Valor Inicial
+- Valor Final
+
+Transação Moedas
+- id
+- professor_id
+- aluno_id 
+- valor
+- motivo
+
+Empresas Parceiras
+- id
+- nome
+- responsavel
+- email
+- telefone
+- endereço
+
+Vantagens
+- id
+- nome
+- descricao
+- foto
+- valor
+- empresa_id
+
+Trocas Vantagens
+- id
+- aluno_id
+- vantagem_id
+
+
+

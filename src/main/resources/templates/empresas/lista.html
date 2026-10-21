@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Empresas parceiras')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('empresas')}"></header>
+<main>
+    <h1>Empresas parceiras</h1>
+    <p class="subtitulo">Empresas cadastradas no sistema e quantas vantagens cada uma oferece.</p>
+
+    <form class="filtros" method="get" th:action="@{/empresas}">
+        <input type="search" name="busca" th:value="${busca}" placeholder="Nome da empresa" aria-label="Buscar">
+        <button type="submit" class="botao secundario">Buscar</button>
+        <a th:if="${busca}" th:href="@{/empresas}">Limpar</a>
+    </form>
+
+    <p class="resultado" th:unless="${#lists.isEmpty(empresas)}"
+       th:text="${#lists.size(empresas)} + (${#lists.size(empresas)} == 1 ? ' empresa' : ' empresas')"></p>
+    <p th:if="${#lists.isEmpty(empresas)}" th:text="${busca} ? 'Nenhuma empresa encontrada.' : 'Nenhuma empresa cadastrada.'"></p>
+    <div class="tabela" th:unless="${#lists.isEmpty(empresas)}">
+        <table>
+            <thead>
+            <tr><th>Nome</th><th>Responsável</th><th>E-mail</th><th>Telefone</th><th>Endereço</th><th class="num">Vantagens</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="e : ${empresas}">
+                <td th:text="${e.nome}"></td>
+                <td th:text="${e.responsavel}"></td>
+                <td th:text="${e.email}"></td>
+                <td class="sem-quebra" th:text="${e.telefone}"></td>
+                <td class="detalhe" th:text="${e.endereco}"></td>
+                <td class="num" th:text="${#lists.size(e.vantagens)}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

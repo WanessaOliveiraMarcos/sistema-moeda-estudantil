@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cadastro de empresa')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('empresas')}"></header>
+<main>
+    <h1>Cadastro de empresa parceira</h1>
+
+    <form th:action="@{/cadastro/empresa}" th:object="${empresa}" method="post" class="formulario" novalidate>
+
+        <label>Nome da empresa
+            <input type="text" th:field="*{nome}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{nome}"></span>
+        </label>
+        <label>Responsável
+            <input type="text" th:field="*{responsavel}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{responsavel}"></span>
+        </label>
+        <div class="linha">
+            <label>E-mail
+                <input type="email" th:field="*{email}" th:errorclass="invalido">
+                <span class="erro" th:errors="*{email}"></span>
+            </label>
+            <label>Telefone
+                <input type="tel" th:field="*{telefone}" th:errorclass="invalido">
+                <span class="erro" th:errors="*{telefone}"></span>
+            </label>
+        </div>
+        <label>Endereço
+            <input type="text" th:field="*{endereco}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{endereco}"></span>
+        </label>
+        <label>Senha
+            <input type="password" th:field="*{senha}" th:errorclass="invalido" placeholder="Mínimo de 6 caracteres"
+                   autocomplete="new-password">
+            <span class="erro" th:errors="*{senha}"></span>
+        </label>
+
+        <div class="botoes">
+            <button type="submit" class="botao">Salvar</button>
+            <a th:href="@{/login}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' · Moeda Estudantil'">Moeda Estudantil</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script defer th:src="@{/js/confirmar.js}"></script>
+</head>
+<body>
+
+<header th:fragment="menu(ativo)" class="menu">
+    <a th:href="@{/}" class="marca">Moeda Estudantil</a>
+    <nav th:if="${perfil}">
+        <th:block th:if="${perfil == 'ADMIN'}">
+            <a th:href="@{/instituicoes}" th:classappend="${ativo == 'instituicoes'} ? 'ativo'">Instituições</a>
+            <a th:href="@{/professores}" th:classappend="${ativo == 'professores'} ? 'ativo'">Professores</a>
+            <a th:href="@{/alunos}" th:classappend="${ativo == 'alunos'} ? 'ativo'">Alunos</a>
+            <a th:href="@{/empresas}" th:classappend="${ativo == 'empresas'} ? 'ativo'">Empresas parceiras</a>
+        </th:block>
+        <th:block th:if="${perfil == 'ALUNO'}">
+            <a th:href="@{/vantagens}" th:classappend="${ativo == 'vantagens'} ? 'ativo'">Vantagens</a>
+            <a th:href="@{/extrato}" th:classappend="${ativo == 'extrato'} ? 'ativo'">Extrato</a>
+        </th:block>
+        <th:block th:if="${perfil == 'PROFESSOR'}">
+            <a th:href="@{/alunos}" th:classappend="${ativo == 'alunos'} ? 'ativo'">Alunos</a>
+            <a th:href="@{/extrato}" th:classappend="${ativo == 'extrato'} ? 'ativo'">Extrato</a>
+        </th:block>
+        <th:block th:if="${perfil == 'EMPRESA'}">
+            <a th:href="@{/minhas-vantagens}" th:classappend="${ativo == 'minhas-vantagens'} ? 'ativo'">Minhas vantagens</a>
+            <a th:href="@{/minhas-vantagens/resgates}" th:classappend="${ativo == 'resgates'} ? 'ativo'">Compras</a>
+        </th:block>
+    </nav>
+    <div class="usuario" th:if="${perfil}">
+        <a class="saldo" th:if="${saldoAtual != null}" th:href="@{/extrato}" title="Ver extrato">
+            <strong th:text="${#numbers.formatInteger(saldoAtual, 1, 'POINT')}">0</strong>
+            <small>moedas</small>
+        </a>
+        <span>
+            <strong th:text="${usuarioLogado.nome}"></strong>
+            <small th:text="${usuarioLogado.perfil.descricao}"></small>
+        </span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="botao secundario">Sair</button>
+        </form>
+    </div>
+    <a th:href="@{/login}" class="entrar" th:unless="${perfil}">Entrar</a>
+</header>
+
+<!-- card de vantagem do catálogo -->
+<article th:fragment="vantagem(v)" class="vantagem">
+    <img th:src="@{'/storage/' + ${v.foto}}" th:alt="${v.nome}" loading="lazy">
+    <div class="corpo">
+        <span class="empresa" th:text="${v.empresa.nome}"></span>
+        <h2 th:text="${v.nome}"></h2>
+        <p class="custo" th:text="${v.valor} + ' moedas'"></p>
+        <p th:text="${v.descricao}"></p>
+        <form th:if="${perfil == 'ALUNO'}" class="resgatar" method="post"
+              th:action="@{/vantagens/{id}/resgatar(id=${v.id})}"
+              th:data-confirmar="|Trocar ${v.valor} moedas por “${v.nome}”?|">
+            <button type="submit" class="botao" th:disabled="${saldoAtual != null and saldoAtual < v.valor}"
+                    th:text="${saldoAtual != null and saldoAtual < v.valor} ? 'Saldo insuficiente' : 'Resgatar'">Resgatar</button>
+        </form>
+    </div>
+</article>
+
+<div th:fragment="mensagens">
+    <p class="alerta sucesso" th:if="${mensagem}" th:text="${mensagem}"></p>
+    <p class="alerta falha" th:if="${erro}" th:text="${erro}"></p>
+</div>
+
+</body>
+</html>

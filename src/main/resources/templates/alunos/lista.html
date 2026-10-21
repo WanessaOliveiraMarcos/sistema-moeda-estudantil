@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Alunos')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('alunos')}"></header>
+<main>
+    <h1>Alunos</h1>
+    <p class="subtitulo" th:if="${instituicao}">Alunos da <strong th:text="${instituicao.nome}"></strong>, sua instituição.
+        Use <strong>Enviar moedas</strong> para reconhecer um aluno.</p>
+    <p class="subtitulo" th:unless="${instituicao}">Alunos cadastrados em todas as instituições.</p>
+
+    <form class="filtros" method="get" th:action="@{/alunos}">
+        <input type="search" name="busca" th:value="${busca}" placeholder="Nome, e-mail ou CPF" aria-label="Buscar">
+        <select name="instituicaoId" th:if="${perfil == 'ADMIN'}" aria-label="Instituição" onchange="this.form.submit()">
+            <option value="">Todas as instituições</option>
+            <option th:each="i : ${instituicoes}" th:value="${i.id}" th:text="${i.nome}"
+                    th:selected="${i.id == instituicaoId}"></option>
+        </select>
+        <button type="submit" class="botao secundario">Buscar</button>
+        <a th:if="${busca != null and !busca.isBlank() or instituicaoId != null and instituicao == null}"
+           th:href="@{/alunos}">Limpar</a>
+    </form>
+
+    <p class="resultado" th:unless="${#lists.isEmpty(alunos)}"
+       th:text="${#lists.size(alunos)} + (${#lists.size(alunos)} == 1 ? ' aluno' : ' alunos')"></p>
+    <p th:if="${#lists.isEmpty(alunos)}"
+       th:text="${busca != null and !busca.isBlank()} ? 'Nenhum aluno encontrado.' : 'Nenhum aluno cadastrado.'"></p>
+    <div class="tabela" th:unless="${#lists.isEmpty(alunos)}">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th><th>E-mail</th>
+                <th th:if="${perfil == 'ADMIN'}">CPF</th>
+                <th th:unless="${instituicao}">Instituição</th><th>Curso</th>
+                <th class="num">Saldo</th>
+                <th th:if="${perfil == 'PROFESSOR'}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${alunos}">
+                <td th:text="${a.nome}"></td>
+                <td th:text="${a.email}"></td>
+                <td class="sem-quebra" th:if="${perfil == 'ADMIN'}"
+                    th:text="${#strings.substring(a.cpf, 0, 3) + '.' + #strings.substring(a.cpf, 3, 6) + '.' + #strings.substring(a.cpf, 6, 9) + '-' + #strings.substring(a.cpf, 9, 11)}"></td>
+                <td th:unless="${instituicao}" th:text="${a.instituicao.nome}"></td>
+                <td th:text="${a.curso.nome}"></td>
+                <td class="num" th:text="${a.saldoMoedas}"></td>
+                <td class="acoes" th:if="${perfil == 'PROFESSOR'}">
+                    <a th:href="@{/moedas/enviar(alunoId=${a.id})}">Enviar moedas</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Enviar moedas')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('alunos')}"></header>
+<main>
+    <h1>Enviar moedas</h1>
+    <p class="subtitulo">Reconheça um aluno da sua instituição. Seu saldo no semestre:
+        <strong th:text="${#numbers.formatInteger(saldo, 1, 'POINT')} + ' moedas'"></strong>.</p>
+
+    <p class="alerta falha" th:if="${#lists.isEmpty(alunos)}">Ainda não há alunos cadastrados na sua instituição.</p>
+    <form th:action="@{/moedas/enviar}" th:object="${envio}" method="post" class="formulario" novalidate>
+        <label>Aluno
+            <select th:field="*{alunoId}" th:errorclass="invalido">
+                <option value="">Selecione...</option>
+                <option th:each="a : ${alunos}" th:value="${a.id}" th:text="${a.nome + ' · ' + a.curso.nome}"></option>
+            </select>
+            <span class="erro" th:errors="*{alunoId}"></span>
+        </label>
+        <label>Moedas
+            <input type="number" min="1" th:max="${saldo}" step="1" th:field="*{valor}" th:errorclass="invalido">
+            <span class="erro" th:errors="*{valor}"></span>
+        </label>
+        <label>Motivo do reconhecimento
+            <textarea th:field="*{motivo}" rows="4" maxlength="500" th:errorclass="invalido"
+                      placeholder="Ex.: participação excelente no seminário de hoje"></textarea>
+            <span class="erro" th:errors="*{motivo}"></span>
+        </label>
+        <div class="botoes">
+            <button type="submit" class="botao">Enviar moedas</button>
+            <a th:href="@{/alunos}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

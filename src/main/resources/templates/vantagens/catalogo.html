@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Vantagens')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('vantagens')}"></header>
+<main>
+    <h1>Vantagens</h1>
+    <p class="subtitulo">Troque suas moedas por produtos e descontos das empresas parceiras.
+        <th:block th:if="${saldoAtual != null}">Seu saldo: <strong th:text="${saldoAtual} + ' moedas'"></strong>.</th:block></p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <form class="filtros" method="get" th:action="@{/vantagens}">
+        <input type="search" name="busca" th:value="${busca}" placeholder="Buscar vantagem" aria-label="Buscar vantagem">
+        <select name="empresaId" aria-label="Empresa" onchange="this.form.submit()">
+            <option value="">Todas as empresas</option>
+            <option th:each="e : ${empresas}" th:value="${e.id}" th:text="${e.nome}"
+                    th:selected="${e.id == empresaId}"></option>
+        </select>
+        <select name="ordem" aria-label="Ordenar" onchange="this.form.submit()">
+            <option value="nome" th:selected="${ordem == 'nome'}">Nome (A–Z)</option>
+            <option value="menor" th:selected="${ordem == 'menor'}">Menor custo</option>
+            <option value="maior" th:selected="${ordem == 'maior'}">Maior custo</option>
+        </select>
+        <button type="submit" class="botao secundario">Buscar</button>
+        <a th:if="${busca != null and !busca.isBlank() or empresaId != null}" th:href="@{/vantagens}">Limpar</a>
+    </form>
+
+    <p class="resultado" th:unless="${#lists.isEmpty(vantagens)}"
+       th:text="${#lists.size(vantagens)} + (${#lists.size(vantagens)} == 1 ? ' vantagem' : ' vantagens')"></p>
+    <p th:if="${#lists.isEmpty(vantagens)}">Nenhuma vantagem encontrada.</p>
+    <div class="vantagens">
+        <th:block th:each="v : ${vantagens}">
+            <article th:replace="~{fragments/layout :: vantagem(${v})}"></article>
+        </th:block>
+    </div>
+</main>
+</body>
+</html>
