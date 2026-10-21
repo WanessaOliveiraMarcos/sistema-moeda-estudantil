@@ -1,8 +1,10 @@
 package com.exemplo.app.controller;
 
+import com.exemplo.app.model.Perfil;
 import com.exemplo.app.security.UsuarioLogado;
 import com.exemplo.app.service.AlunoService;
 import com.exemplo.app.service.ProfessorService;
+import com.exemplo.app.service.TransferenciaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +21,7 @@ public class UsuarioLogadoAdvice {
 
     private final AlunoService alunoService;
     private final ProfessorService professorService;
+    private final TransferenciaService transferenciaService;
 
     @ModelAttribute("usuarioLogado")
     public UsuarioLogado usuarioLogado(@AuthenticationPrincipal UsuarioLogado usuario) {
@@ -41,5 +44,14 @@ public class UsuarioLogadoAdvice {
             case PROFESSOR -> professorService.saldoDoSemestre(professorService.buscar(usuario.getId())).getValorFinal();
             default -> null;
         };
+    }
+
+    // pedidos de envio entre alunos esperando o professor (número ao lado de "Autorizações")
+    @ModelAttribute("autorizacoesPendentes")
+    public Long autorizacoesPendentes(@AuthenticationPrincipal UsuarioLogado usuario) {
+        if (usuario == null || usuario.getPerfil() != Perfil.PROFESSOR) {
+            return null;
+        }
+        return transferenciaService.contarPendentes(usuario.getId());
     }
 }

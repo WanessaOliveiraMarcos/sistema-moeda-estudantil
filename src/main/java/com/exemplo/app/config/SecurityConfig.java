@@ -23,9 +23,13 @@ public class SecurityConfig {
                         // aluno: catálogo de vantagens com seus preços e resgate
                         .requestMatchers(HttpMethod.GET, "/vantagens").hasRole("ALUNO")
                         .requestMatchers(HttpMethod.POST, "/vantagens/*/resgatar").hasRole("ALUNO")
-                        // professor: alunos da sua instituição (filtro no AlunoController; admin vê todos) e envio de moedas
+                        // professor: alunos das suas turmas (filtro no AlunoController; admin vê todos) e envio de moedas
                         .requestMatchers(HttpMethod.GET, "/alunos").hasAnyRole("PROFESSOR", "ADMIN")
                         .requestMatchers("/moedas/enviar").hasRole("PROFESSOR")
+                        // professor: suas turmas (com critérios de troca) e autorização dos envios entre alunos
+                        .requestMatchers("/turmas/**", "/autorizacoes/**").hasRole("PROFESSOR")
+                        // aluno: matrícula nas turmas e envio de moedas a colegas de turma
+                        .requestMatchers("/minhas-turmas/**", "/transferencias/**").hasRole("ALUNO")
                         // saldo e movimentações de quem tem moedas
                         .requestMatchers("/extrato").hasAnyRole("ALUNO", "PROFESSOR")
                         // empresa: suas vantagens e os alunos que as resgataram (empresa vem do login)

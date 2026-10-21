@@ -55,8 +55,7 @@ public class MoedaController {
 
     private String formulario(UsuarioLogado usuario, Model model) {
         Professor professor = professorService.buscar(usuario.getId());
-        Long instituicaoId = professor.getDepartamento().getInstituicao().getId();
-        model.addAttribute("alunos", alunoService.listar(instituicaoId, null));
+        model.addAttribute("alunos", alunoService.listarDoProfessor(professor.getId(), null, null));
         model.addAttribute("saldo", professorService.saldoDoSemestre(professor).getValorFinal());
         return "moedas/enviar";
     }

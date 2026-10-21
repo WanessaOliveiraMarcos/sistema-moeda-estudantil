@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Enviar a colega')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('transferencias')}"></header>
+<main>
+    <h1>Enviar moedas a um colega</h1>
+    <p class="subtitulo">Escolha uma turma sua, o colega e o critério de troca. As moedas só saem do seu saldo
+        quando o professor da turma autorizar.</p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <p th:if="${#lists.isEmpty(turmas)}" class="alerta falha">Você precisa estar matriculado numa turma.
+        <a th:href="@{/minhas-turmas}">Ver turmas</a></p>
+
+    <th:block th:unless="${#lists.isEmpty(turmas)}">
+        <!-- passo 1: a turma define os colegas e os critérios disponíveis -->
+        <form class="filtros" method="get" th:action="@{/transferencias}">
+            <select name="turmaId" aria-label="Turma" onchange="this.form.submit()">
+                <option value="">Escolha a turma...</option>
+                <option th:each="t : ${turmas}" th:value="${t.id}" th:text="${t.nome + ' · Prof. ' + t.professor.nome}"
+                        th:selected="${turmaEscolhida != null and t.id == turmaEscolhida.id}"></option>
+            </select>
+            <button type="submit" class="botao secundario">Escolher</button>
+        </form>
+
+        <!-- passo 2 -->
+        <th:block th:if="${turmaEscolhida}">
+            <p th:if="${#lists.isEmpty(turmaEscolhida.criterios)}" class="alerta falha">O professor ainda não definiu
+                critérios de troca para esta turma.</p>
+            <p th:if="${#lists.isEmpty(colegas)}" class="alerta falha">Você ainda não tem colegas nesta turma.</p>
+            <form th:unless="${#lists.isEmpty(turmaEscolhida.criterios) or #lists.isEmpty(colegas)}"
+                  th:action="@{/transferencias}" th:object="${transferencia}" method="post" class="formulario" novalidate>
+                <input type="hidden" th:field="*{turmaId}">
+                <span class="erro" th:errors="*{turmaId}"></span>
+                <label>Colega
+                    <select th:field="*{destinatarioId}" th:errorclass="invalido">
+                        <option value="">Selecione...</option>
+                        <option th:each="c : ${colegas}" th:value="${c.id}" th:text="${c.nome}"></option>
+                    </select>
+                    <span class="erro" th:errors="*{destinatarioId}"></span>
+                </label>
+                <label>Critério
+                    <select th:field="*{criterioId}" th:errorclass="invalido">
+                        <option value="">Selecione...</option>
+                        <option th:each="c : ${turmaEscolhida.criterios}" th:value="${c.id}"
+                                th:text="${c.descricao + ' (até ' + c.valorMaximo + ' moedas)'}"></option>
+                    </select>
+                    <span class="erro" th:errors="*{criterioId}"></span>
+                </label>
+                <label>Moedas
+                    <input type="number" min="1" th:max="${saldoAtual}" th:field="*{valor}" th:errorclass="invalido">
+                    <span class="erro" th:errors="*{valor}"></span>
+                </label>
+                <label>Mensagem (opcional)
+                    <textarea th:field="*{mensagem}" rows="3" maxlength="500" th:errorclass="invalido"
+                              placeholder="Ex.: obrigado pela ajuda na lista de exercícios"></textarea>
+                    <span class="erro" th:errors="*{mensagem}"></span>
+                </label>
+                <div class="botoes">
+                    <button type="submit" class="botao">Pedir autorização</button>
+                </div>
+            </form>
+        </th:block>
+    </th:block>
+
+    <section>
+        <h2>Meus envios e recebimentos entre colegas</h2>
+        <p th:if="${#lists.isEmpty(pedidos)}">Nenhum envio entre colegas ainda.</p>
+        <div class="tabela" th:unless="${#lists.isEmpty(pedidos)}">
+            <table>
+                <thead><tr><th>Data</th><th>De</th><th>Para</th><th>Turma · critério</th><th class="num">Moedas</th><th>Situação</th></tr></thead>
+                <tbody>
+                <tr th:each="p : ${pedidos}">
+                    <td th:text="${#temporals.format(p.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${p.remetente.nome}"></td>
+                    <td th:text="${p.destinatario.nome}"></td>
+                    <td class="detalhe" th:text="${p.turma.nome + ' · ' + p.criterio.descricao}"></td>
+                    <td class="num" th:text="${p.valor}"></td>
+                    <td>
+                        <span class="situacao" th:classappend="${#strings.toLowerCase(p.status.name())}"
+                              th:text="${p.status.descricao}"></span>
+                        <small class="detalhe" th:if="${p.motivoRecusa}" th:text="${p.motivoRecusa}"></small>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

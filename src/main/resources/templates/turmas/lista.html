@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Turmas')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: menu('turmas')}"></header>
+<main>
+    <h1>Minhas turmas</h1>
+    <p class="subtitulo">Os alunos se matriculam nas suas turmas (até <span th:text="${limite}">40</span> por turma).
+        Em cada turma você define os critérios para os alunos enviarem moedas entre si.</p>
+    <div th:replace="~{fragments/layout :: mensagens}"></div>
+
+    <p th:if="${#lists.isEmpty(turmas)}">Você ainda não tem turmas. Crie a primeira abaixo.</p>
+    <div class="tabela" th:unless="${#lists.isEmpty(turmas)}">
+        <table>
+            <thead>
+            <tr><th>Turma</th><th>Semestre</th><th class="num">Alunos</th><th class="num">Critérios</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${turmas}">
+                <td th:text="${t.nome}"></td>
+                <td th:text="${t.semestre}"></td>
+                <td class="num" th:text="${#sets.size(t.alunos)} + ' / ' + ${limite}"></td>
+                <td class="num" th:text="${#lists.size(t.criterios)}"></td>
+                <td class="acoes"><a th:href="@{/turmas/{id}(id=${t.id})}">Abrir</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <section>
+        <h2>Nova turma</h2>
+        <form th:action="@{/turmas}" th:object="${turma}" method="post" class="formulario" novalidate>
+            <div class="linha">
+                <label>Nome
+                    <input type="text" th:field="*{nome}" placeholder="Ex.: Laboratório de Desenvolvimento de Software"
+                           th:errorclass="invalido">
+                    <span class="erro" th:errors="*{nome}"></span>
+                </label>
+                <label class="curto">Semestre
+                    <input type="text" th:field="*{semestre}" placeholder="2026/2" th:errorclass="invalido">
+                    <span class="erro" th:errors="*{semestre}"></span>
+                </label>
+            </div>
+            <div class="botoes">
+                <button type="submit" class="botao">Criar turma</button>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

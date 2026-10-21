@@ -23,6 +23,18 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
             """)
     List<Aluno> buscar(Long instituicaoId, String busca);
 
+    // alunos matriculados nas turmas do professor (opcionalmente numa turma só)
+    @Query("""
+            select distinct a from Turma t join t.alunos a
+            where t.professor.id = :professorId
+              and (:turmaId is null or t.id = :turmaId)
+              and (:busca is null
+                   or lower(a.nome) like lower(concat('%', :busca, '%'))
+                   or lower(a.email) like lower(concat('%', :busca, '%')))
+            order by a.nome
+            """)
+    List<Aluno> buscarDoProfessor(Long professorId, Long turmaId, String busca);
+
     long countByInstituicaoId(Long instituicaoId);
 
     // trava a linha até o fim da transação: evita gastar o mesmo saldo em dois resgates simultâneos

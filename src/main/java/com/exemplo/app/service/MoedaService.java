@@ -10,12 +10,13 @@ import com.exemplo.app.model.TransacaoMoedas;
 import com.exemplo.app.repository.AlunoRepository;
 import com.exemplo.app.repository.SaldoMoedasProfessorRepository;
 import com.exemplo.app.repository.TransacaoMoedasRepository;
+import com.exemplo.app.repository.TurmaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/** Professor envia moedas a um aluno da sua instituição (US11) e o aluno é avisado por e-mail (US12). */
+/** Professor envia moedas a um aluno das suas turmas e o aluno é avisado por e-mail. */
 @Service
 @RequiredArgsConstructor
 public class MoedaService {
@@ -23,6 +24,7 @@ public class MoedaService {
     private final AlunoRepository alunoRepository;
     private final SaldoMoedasProfessorRepository saldoRepository;
     private final TransacaoMoedasRepository transacaoRepository;
+    private final TurmaRepository turmaRepository;
     private final ProfessorService professorService;
     private final ApplicationEventPublisher eventos;
 
@@ -31,8 +33,8 @@ public class MoedaService {
         Professor professor = professorService.buscar(professorId);
         Aluno aluno = alunoRepository.buscarParaAtualizar(form.getAlunoId())
                 .orElseThrow(() -> new RegraNegocioException("alunoId", "Aluno não encontrado"));
-        if (!aluno.getInstituicao().getId().equals(professor.getDepartamento().getInstituicao().getId())) {
-            throw new RegraNegocioException("alunoId", "Você só pode enviar moedas a alunos da sua instituição");
+        if (!turmaRepository.existsByProfessorIdAndAlunos_Id(professorId, aluno.getId())) {
+            throw new RegraNegocioException("alunoId", "Você só pode enviar moedas a alunos das suas turmas");
         }
 
         professorService.saldoDoSemestre(professor);
@@ -58,7 +60,7 @@ public class MoedaService {
                 """
                 Olá, %s!
 
-                O professor %s enviou %d moedas para você.
+                %s enviou %d moedas para você.
 
                 Motivo: %s
 

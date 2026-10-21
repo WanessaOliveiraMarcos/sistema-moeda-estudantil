@@ -1,7 +1,9 @@
 package com.exemplo.app.service;
 
 import com.exemplo.app.dto.Movimentacao;
+import com.exemplo.app.model.StatusTransferencia;
 import com.exemplo.app.repository.TransacaoMoedasRepository;
+import com.exemplo.app.repository.TransferenciaAlunoRepository;
 import com.exemplo.app.repository.TrocaVantagemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +19,9 @@ public class ExtratoService {
 
     private final TransacaoMoedasRepository transacaoRepository;
     private final TrocaVantagemRepository trocaRepository;
+    private final TransferenciaAlunoRepository transferenciaRepository;
 
-    // moedas recebidas de professores e trocas por vantagens
+    // moedas recebidas de professores, envios aprovados entre colegas e trocas por vantagens
     public List<Movimentacao> doAluno(Long alunoId) {
         Stream<Movimentacao> recebidas = transacaoRepository.findByAlunoIdOrderByDataHoraDesc(alunoId).stream()
                 .map(t -> new Movimentacao(t.getDataHora(), "Recebido",
@@ -26,7 +29,17 @@ public class ExtratoService {
         Stream<Movimentacao> trocas = trocaRepository.findByAlunoIdOrderByDataHoraDesc(alunoId).stream()
                 .map(t -> new Movimentacao(t.getDataHora(), "Troca",
                         t.getVantagem().getNome(), t.getVantagem().getEmpresa().getNome(), -t.getValor(), t.getCodigo()));
-        return Stream.concat(recebidas, trocas)
+        Stream<Movimentacao> deColegas = transferenciaRepository
+                .findByDestinatarioIdAndStatus(alunoId, StatusTransferencia.APROVADA).stream()
+                .map(t -> new Movimentacao(t.getDecididaEm(), "Recebido de colega",
+                        "De " + t.getRemetente().getNome(), t.getCriterio().getDescricao() + " · " + t.getTurma().getNome(),
+                        t.getValor(), null));
+        Stream<Movimentacao> paraColegas = transferenciaRepository
+                .findByRemetenteIdAndStatus(alunoId, StatusTransferencia.APROVADA).stream()
+                .map(t -> new Movimentacao(t.getDecididaEm(), "Enviado a colega",
+                        "Para " + t.getDestinatario().getNome(), t.getCriterio().getDescricao() + " · " + t.getTurma().getNome(),
+                        -t.getValor(), null));
+        return Stream.of(recebidas, deColegas, paraColegas, trocas).flatMap(s -> s)
                 .sorted(Comparator.comparing(Movimentacao::dataHora).reversed())
                 .toList();
     }
