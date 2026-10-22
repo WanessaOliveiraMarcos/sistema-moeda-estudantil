@@ -20,7 +20,7 @@
                 <td th:text="${r.professor.email}"></td>
                 <td th:text="${r.professor.departamento.nome}"></td>
                 <td th:text="${r.professor.departamento.instituicao.nome}"></td>
-                <td class="num" th:text="${#numbers.formatInteger(r.saldo, 1, 'POINT')}"></td>
+                <td class="num saldo-celula"><svg th:replace="~{fragments/layout :: moeda}"></svg><span th:text="${#numbers.formatInteger(r.saldo, 1, 'POINT')}"></span></td>
             </tr>
             </tbody>
         </table>

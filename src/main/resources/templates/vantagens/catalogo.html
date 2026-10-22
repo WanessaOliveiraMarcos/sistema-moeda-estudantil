@@ -6,7 +6,7 @@
 <main>
     <h1>Vantagens</h1>
     <p class="subtitulo">Troque suas moedas por produtos e descontos das empresas parceiras.
-        <th:block th:if="${saldoAtual != null}">Seu saldo: <strong th:text="${saldoAtual} + ' moedas'"></strong>.</th:block></p>
+        <th:block th:if="${saldoAtual != null}">Seu saldo: <svg th:replace="~{fragments/layout :: moeda}"></svg><strong th:text="${saldoAtual} + ' moedas'"></strong>.</th:block></p>
     <div th:replace="~{fragments/layout :: mensagens}"></div>
 
     <form class="filtros" method="get" th:action="@{/vantagens}">

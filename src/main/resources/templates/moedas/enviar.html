@@ -6,7 +6,7 @@
 <main>
     <h1>Enviar moedas</h1>
     <p class="subtitulo">Reconheça um aluno das suas turmas. Seu saldo no semestre:
-        <strong th:text="${#numbers.formatInteger(saldo, 1, 'POINT')} + ' moedas'"></strong>.</p>
+        <svg th:replace="~{fragments/layout :: moeda}"></svg><strong th:text="${#numbers.formatInteger(saldo, 1, 'POINT')} + ' moedas'"></strong>.</p>
 
     <p class="alerta falha" th:if="${#lists.isEmpty(alunos)}">Ainda não há alunos matriculados nas suas turmas.</p>
     <form th:action="@{/moedas/enviar}" th:object="${envio}" method="post" class="formulario" novalidate>

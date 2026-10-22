@@ -52,7 +52,7 @@
                 <td th:if="${perfil == 'ADMIN'}" th:text="${a.instituicao.nome}"></td>
                 <td th:text="${a.curso.nome}"></td>
                 <td th:if="${perfil == 'PROFESSOR'}" class="detalhe" th:text="${turmasDoAluno[a.id]}"></td>
-                <td class="num" th:text="${a.saldoMoedas}"></td>
+                <td class="num saldo-celula"><svg th:replace="~{fragments/layout :: moeda}"></svg><span th:text="${a.saldoMoedas}"></span></td>
                 <td class="acoes" th:if="${perfil == 'PROFESSOR'}">
                     <a th:href="@{/moedas/enviar(alunoId=${a.id})}">Enviar moedas</a>
                 </td>

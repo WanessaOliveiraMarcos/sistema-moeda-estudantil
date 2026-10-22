@@ -9,7 +9,7 @@
 
     <div class="indicadores">
         <div class="indicador">
-            <span class="numero" th:text="${#numbers.formatInteger(saldo, 1, 'POINT')}">0</span><span>Saldo atual</span>
+            <span class="numero"><svg th:replace="~{fragments/layout :: moeda}"></svg><span th:text="${#numbers.formatInteger(saldo, 1, 'POINT')}">0</span></span><span>Saldo atual</span>
         </div>
         <th:block th:if="${saldoSemestre}">
             <div class="indicador">

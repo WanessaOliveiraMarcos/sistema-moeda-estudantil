@@ -361,3 +361,17 @@ td.detalhe { white-space: normal; min-width: 220px; color: var(--suave); }
 .situacao.aprovada { color: var(--sucesso); }
 .situacao.recusada { color: var(--perigo); }
 td small.detalhe { display: block; margin-top: 4px; }
+
+/* ---------- ícone de moeda nos saldos ---------- */
+.moeda { display: inline-block; width: 1em; height: 1em; flex: none; vertical-align: -0.15em; margin-right: 0.3em; }
+.usuario .saldo { display: grid; grid-template-columns: auto auto; column-gap: 8px; align-items: center; }
+.usuario .saldo .moeda { grid-row: span 2; width: 26px; height: 26px; margin: 0; }
+.usuario .saldo strong, .usuario .saldo small { grid-column: 2; text-align: right; }
+.indicador .numero { display: inline-flex; align-items: center; }
+.indicador .numero .moeda { width: 0.75em; height: 0.75em; margin-right: 0.2em; }
+td.saldo-celula { white-space: nowrap; }
+td.saldo-celula .moeda { width: 0.95em; height: 0.95em; margin-right: 0.35em; }
+/* célula de ações continua sendo célula de tabela (display: flex quebrava a borda da linha) */
+td.acoes { display: table-cell; text-align: right; }
+td.acoes > * { display: inline-block; vertical-align: middle; }
+td.acoes > * + * { margin-left: 16px; }

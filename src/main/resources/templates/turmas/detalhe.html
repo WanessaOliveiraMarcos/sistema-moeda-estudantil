@@ -59,7 +59,7 @@
                     <td th:text="${a.nome}"></td>
                     <td th:text="${a.email}"></td>
                     <td th:text="${a.curso.nome}"></td>
-                    <td class="num" th:text="${a.saldoMoedas}"></td>
+                    <td class="num saldo-celula"><svg th:replace="~{fragments/layout :: moeda}"></svg><span th:text="${a.saldoMoedas}"></span></td>
                     <td class="acoes"><a th:href="@{/moedas/enviar(alunoId=${a.id})}">Enviar moedas</a></td>
                 </tr>
                 </tbody>
